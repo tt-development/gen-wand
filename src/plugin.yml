@@ -1,0 +1,5 @@
+name: GenWand
+main: ttdev.genwand.GenWand
+version: 1.0
+author: [Tre, Thomas]
+commands:
