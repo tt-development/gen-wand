@@ -4,3 +4,6 @@ version: 1.0
 author: [Tre, Thomas]
 depends: [WorldEdit, API]
 commands:
+  gen:
+    description: GenWand
+    permission: genwand.use

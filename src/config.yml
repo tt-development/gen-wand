@@ -1,6 +1,6 @@
 # Item ID of the wand tool. Make sure this doesn't conflict with
 # any other tools such as the WE edit tool
-edit-tool: 1
+edit-tool: 280
 
 # Material prices
 prices:
