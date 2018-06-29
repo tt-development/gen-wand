@@ -27,8 +27,6 @@ public class InventoryManager implements InventoryListener {
 		
 	}
 	
-	
-
 	@Override
 	public void InventoryClickEvent(InventoryClick event) {
 		if (event.getPlayerInventory().getName().contains("Blocks: ")) {

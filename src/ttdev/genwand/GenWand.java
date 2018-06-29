@@ -21,157 +21,167 @@ import org.bukkit.util.BlockIterator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 public class GenWand extends JavaPlugin implements Listener {
-	
-	public static HashMap<Player, Location> pos1 = new HashMap<>();
-	public static HashMap<Player, Location> pos2 = new HashMap<>();
 
-	public static Map<Player, Selection> selectionMap = new HashMap<>();
+    public static HashMap<Player, Location> pos1 = new HashMap<>();
+    public static HashMap<Player, Location> pos2 = new HashMap<>();
 
-	private static GenWand singleton;
-	private static WorldEditPlugin worldEdit;
+    public static Map<Player, Selection> selectionMap = new HashMap<>();
 
-	private static final String usePermission = "genwand.use";
+    private static GenWand singleton;
+    private static WorldEditPlugin worldEdit;
 
-	private static final int REACH = 200;
-	
-	public static GenWand getInstance() {
-		return singleton;
-	}
-	
-	@Override
-	public void onEnable() {
-		singleton = this;
+    private static final String usePermission = "genwand.use";
+    private static final String adminPermission = "genwand.admin";
 
-		PluginManager pluginManager = getServer().getPluginManager();
-		worldEdit = (WorldEditPlugin) pluginManager.getPlugin("WorldEdit");
-		if (worldEdit == null) {
-			getLogger().log(Level.WARNING, "Couldn't find plugin \"WorldEdit\"");
-		}
+    private static final int REACH = 200;
 
-		pluginManager.registerEvents(this, this);
+    public static GenWand getInstance() {
+        return singleton;
+    }
 
-		//Configuration
-		this.getConfig().addDefault("items", "");
-		this.getConfig().options().copyDefaults(true);
-		this.saveConfig();
-	}
-	
-	@Override
-	public void onDisable() {
-		this.saveConfig();
-	}
-	
+    @Override
+    public void onEnable() {
+        singleton = this;
+
+        PluginManager pluginManager = getServer().getPluginManager();
+        worldEdit = (WorldEditPlugin) pluginManager.getPlugin("WorldEdit");
+        if (worldEdit == null) {
+            getLogger().log(Level.WARNING, "Couldn't find plugin \"WorldEdit\"");
+        }
+
+        pluginManager.registerEvents(this, this);
+
+        //Configuration
+        this.getConfig().addDefault("items", "");
+        this.getConfig().options().copyDefaults(true);
+        this.saveConfig();
+    }
+
+    @Override
+    public void onDisable() {
+        this.saveConfig();
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    	
-    	if (!(sender instanceof Player)) {
-    		return true;
-    	}
-    	
-    	Player player = (Player) sender;
-    	
-    	if (label.equalsIgnoreCase("gen")) {
 
-    		if (args.length == 1) {
+        if (!(sender instanceof Player)) {
+            return true;
+        }
 
-    			if (args[0].equalsIgnoreCase("reload")) {
-    				reloadConfig();
-    				player.sendMessage(getName() + " reloaded.");
-    				return true;
-				}
+        Player player = (Player) sender;
 
-    			if (args[0].equalsIgnoreCase("wand")) {
-    				player.getInventory().addItem(EditWand.getEditWand());
-    				return true;
-				}
+        if (label.equalsIgnoreCase("gen")) {
 
-    			if (args[0].equalsIgnoreCase("pos1")) {
-    				pos1.put(player, getTargetBlock(player, 4).getLocation());
-					player.sendMessage(ChatColor.GREEN + "First position set.");
-    				return true;
-    			}
-    			
-    			if (args[0].equalsIgnoreCase("pos2")) {
-    				pos2.put(player, getTargetBlock(player, 4).getLocation());
-    				player.sendMessage(ChatColor.GREEN + "Second position set.");
-    				return true;
-    			}
-    			
-    			player.sendMessage(ChatColor.RED + "Incorrect syntax: /gen pos1 ; /gen pos2");
+            if (args.length == 1) {
 
-    		} else {
-    			Location locationOne = pos1.get(player);
-    			Location locationTwo = pos2.get(player);
-    			if (locationOne == null || locationTwo == null) {
-    				player.sendMessage(ChatColor.RED + "You must complete your selection first.");
-    				return true;
-				}
+                if (args[0].equalsIgnoreCase("reload") && player.hasPermission(adminPermission)) {
+                    reloadConfig();
+                    player.sendMessage(getName() + " reloaded.");
+                    return true;
+                }
 
-				CuboidSelection selection = new CuboidSelection(player.getWorld(), locationOne, locationTwo);
-				selectionMap.put(player, selection);
+                if (args[0].equalsIgnoreCase("wand")) {
+                    player.getInventory().addItem(EditWand.getEditWand());
+                    return true;
+                }
 
-    			InventoryManager.openInventory(player);
-    		}
-    		
-    	}
-    	
-    	return true;
-    	
+                if (args[0].equalsIgnoreCase("pos1")) {
+                    setPosition(player, true, Position.FIRST, null);
+                    return true;
+                }
+
+                if (args[0].equalsIgnoreCase("pos2")) {
+                    setPosition(player, true, Position.SECOND, null);
+                    return true;
+                }
+
+                player.sendMessage(ChatColor.RED + "Incorrect syntax: /gen pos1 ; /gen pos2");
+
+            } else {
+                Location locationOne = pos1.get(player);
+                Location locationTwo = pos2.get(player);
+                if (locationOne == null || locationTwo == null) {
+                    player.sendMessage(ChatColor.RED + "You must complete your selection first.");
+                    return true;
+                }
+
+                CuboidSelection selection = new CuboidSelection(player.getWorld(), locationOne, locationTwo);
+                selectionMap.put(player, selection);
+
+                InventoryManager.openInventory(player);
+            }
+
+        }
+
+        return true;
+
+    }
+
+    private enum Position {
+        FIRST("First"), SECOND("Second");
+
+        private String friendlyName;
+
+        Position(String friendlyName) {
+            this.friendlyName = friendlyName;
+        }
+
+        public String getFriendlyName() {
+            return friendlyName;
+        }
+    }
+
+    public void setPosition(Player player, boolean command, Position position, ItemStack itemInHand) {
+
+        Location target;
+
+        if (!command) {
+            if (itemInHand == null || !EditWand.isEqual(itemInHand)) {
+                return;
+            }
+        }
+
+        target = player.getTargetBlock((Set<Material>) null, 200).getLocation();
+
+        switch (position) {
+            case FIRST:
+                pos1.put(player, target);
+                break;
+            case SECOND:
+                pos2.put(player, target);
+                break;
+        }
+
+        player.sendMessage(position.getFriendlyName() + " position set.");
+
     }
 
     @EventHandler
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
-		Action action = event.getAction();
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        Action action = event.getAction();
 
-		ItemStack itemStack = event.getItem();
+        ItemStack itemStack = event.getItem();
 
-		if (itemStack == null) {
-			return;
-		}
+        if (action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
+            setPosition(player, false, Position.FIRST, itemStack);
+            event.setCancelled(true);
+        }
 
-		if (!EditWand.isEqual(itemStack) || !player.hasPermission(usePermission)) {
-			return;
-		}
+        if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
+            setPosition(player, false, Position.SECOND, itemStack);
+            event.setCancelled(true);
+        }
+    }
 
-		if (action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
-			Location clickedLocation = null;
-			switch (action) {
-				case LEFT_CLICK_BLOCK:
-					clickedLocation = event.getClickedBlock().getLocation();
-					break;
-				case LEFT_CLICK_AIR:
-					clickedLocation = getTargetBlock(player, REACH).getLocation();
-					break;
-			}
-			pos1.put(player, clickedLocation);
-			player.sendMessage(ChatColor.GREEN + "First position set.");
-			event.setCancelled(true);
-		}
-
-		if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-			Location clickedLocation = null;
-			switch (action) {
-				case RIGHT_CLICK_BLOCK:
-					clickedLocation = event.getClickedBlock().getLocation();
-					break;
-				case RIGHT_CLICK_AIR:
-					clickedLocation = getTargetBlock(player, REACH).getLocation();
-					break;
-			}
-			pos2.put(player, clickedLocation);
-			player.sendMessage(ChatColor.GREEN + "Second position set.");
-			event.setCancelled(true);
-		}
-
-	}
-
-	//Get target block.
+    //Get target block.
     public final Block getTargetBlock(Player player, Integer range) {
-        BlockIterator bi= new BlockIterator(player, range);
+        BlockIterator bi = new BlockIterator(player, range);
         Block lastBlock = bi.next();
         while (bi.hasNext()) {
             lastBlock = bi.next();
@@ -181,5 +191,5 @@ public class GenWand extends JavaPlugin implements Listener {
         }
         return lastBlock;
     }
-	
+
 }
