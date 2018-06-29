@@ -23,16 +23,16 @@ public class InventoryManager implements InventoryListener {
 	
 	public static void openInventory(Player player) {
 
-		if (!Genwand.pos1.containsKey(player)) {
+		if (!GenWand.pos1.containsKey(player)) {
 			return;
 		}
-		if (!Genwand.pos2.containsKey(player)) {
+		if (!GenWand.pos2.containsKey(player)) {
 			return;
 		}
 		
 		//Calculate the amount of blocks
-		Block pos1 = Genwand.pos1.get(player);
-		Block pos2 = Genwand.pos2.get(player);
+		Block pos1 = GenWand.pos1.get(player).getBlock();
+		Block pos2 = GenWand.pos2.get(player).getBlock();
 		
 		int xPos = pos1.getX() - pos2.getX();
 		int yPos = pos1.getY() - pos2.getY();
@@ -48,9 +48,6 @@ public class InventoryManager implements InventoryListener {
 			zPos = zPos * -1;
 		}
 		int totalBlocks = (xPos + 1) * (yPos + 1) * (zPos + 1);
-		
-		//Charge the player the money.
-		//TODO Vault
 		
 		//Create the inventory.
 		AInventory inventory = new AInventory("&cBlocks: " + totalBlocks, 1);

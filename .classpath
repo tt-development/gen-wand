@@ -4,5 +4,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/Gebruiker/Desktop/Backup/server development/CookieCraft Server/Dev Server/spigot.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Gebruiker/Desktop/API.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Gebruiker/Downloads/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

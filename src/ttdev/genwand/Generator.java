@@ -1,23 +1,30 @@
 package ttdev.genwand;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
+
+import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
+import ttdev.api.API;
 
 public class Generator {
 
+	@SuppressWarnings("deprecation")
 	public static void startGenerating(Player player, Material material) {
 		
-		if (!Genwand.pos1.containsKey(player)) {
+		if (!GenWand.pos1.containsKey(player)) {
 			return;
 		}
-		if (!Genwand.pos2.containsKey(player)) {
+		if (!GenWand.pos2.containsKey(player)) {
 			return;
 		}
 		
-		Block pos1 = Genwand.pos1.get(player);
-		Block pos2 = Genwand.pos2.get(player);
+		Block pos1 = GenWand.pos1.get(player).getBlock();
+		Block pos2 = GenWand.pos2.get(player).getBlock();
 		
 		//pos1 100 10 100
 		//pos2 200 10 200
@@ -55,6 +62,42 @@ public class Generator {
 			zPos = zPos * -1;
 		}
 		
+		int totalBlocks = (xPos + 1) * (yPos + 1) * (zPos + 1);
+		
+		//Charge the player the money.
+		if (!API.getPluginManager().isPluginEnabled("Vault")) {
+			player.sendMessage(ChatColor.RED + "Error: Vault not found.");
+			return;
+		}
+		
+		Economy economy = null;
+        RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+        
+        int price = 50;
+        if (material.equals(Material.OBSIDIAN)) {
+        	price = MaterialPrices.getInstance().getObsidianCost();
+        }
+        if (material.equals(Material.COBBLESTONE)) {
+        	price = MaterialPrices.getInstance().getCobblestoneCost();
+        }
+        if (material.equals(Material.SAND)) {
+        	price = MaterialPrices.getInstance().getSandCost();
+        }
+        
+        int totalCost = price * totalBlocks;
+        
+        int balance = (int) economy.getBalance(player.getName());
+        
+        if (balance >= totalCost) {
+        	economy.withdrawPlayer(player.getName(), totalCost);
+        } else {
+        	player.sendMessage(ChatColor.RED + "You don't have enough money to place these blocks!");
+        	return;
+        }
+		
 		for (int x = xSmallest; x < (xSmallest + xPos + 1); x++) {
 			for (int y = ySmallest; y < (ySmallest + yPos + 1); y++) {
 				for (int z = zSmallest; z < (zSmallest + zPos + 1); z++) {
@@ -63,9 +106,6 @@ public class Generator {
 				}
 			}
 		}
-		
-		int totalBlocks = (xPos + 1) * (yPos + 1) * (zPos + 1);
-		player.sendMessage("Blocks: " + totalBlocks);
 	}
 	
 }
