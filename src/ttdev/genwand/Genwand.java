@@ -49,14 +49,16 @@ public class Genwand extends JavaPlugin {
     	
     	if (label.equalsIgnoreCase("gen")) {
     		
-    		if (args.length == 2) {
+    		if (args.length == 1) {
     			
-    			if (args[1].equalsIgnoreCase("pos1")) {
+    			if (args[0].equalsIgnoreCase("pos1")) {
+    				player.sendMessage("Pos1 set");
     				pos1.put(player, getTargetBlock(player, 4));
     				return true;
     			}
     			
-    			if (args[1].equalsIgnoreCase("pos2")) {
+    			if (args[0].equalsIgnoreCase("pos2")) {
+    				player.sendMessage("Pos2 set");
     				pos2.put(player, getTargetBlock(player, 4));
     				return true;
     			}
@@ -64,9 +66,10 @@ public class Genwand extends JavaPlugin {
     			player.sendMessage(ChatColor.RED + "Incorrect syntax: /gen pos1 ; /gen pos2");
     			return true;
     		} else {
-    			//Open inv
+    			InventoryManager.openInventory(player);
     			return true;
     		}
+    		
     		
     	}
     	

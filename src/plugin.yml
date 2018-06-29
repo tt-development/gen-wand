@@ -1,0 +1,8 @@
+name: Genwand
+main: ttdev.genwand.Genwand
+authors: [Thomas, Tre]
+version: 1.0
+commands:
+   gen:
+      description: Main genwand command.
+      usage: /<command>
