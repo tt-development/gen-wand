@@ -122,6 +122,10 @@ public class GenWand extends JavaPlugin implements Listener {
 
     }
 
+    public static WorldEditPlugin getWorldEdit() {
+        return worldEdit;
+    }
+
     private enum Position {
         FIRST("First"), SECOND("Second");
 
