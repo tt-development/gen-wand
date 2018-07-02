@@ -2,6 +2,12 @@
 # any other tools such as the WE edit tool
 edit-tool: 280
 
+# The maximum number of blocks that can be edited at once.
+max-blocks: 100
+
+# Delay in seconds
+delay:
+
 # Material prices
 prices:
   obsidian: 50

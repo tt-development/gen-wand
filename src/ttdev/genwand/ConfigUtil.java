@@ -1,16 +1,16 @@
 package ttdev.genwand;
 
-public class MaterialPrices {
+public class ConfigUtil {
 
-    private static MaterialPrices singleton;
+    private static ConfigUtil singleton;
 
-    private MaterialPrices() {
+    private ConfigUtil() {
 
     }
 
-    public static MaterialPrices getInstance() {
+    public static ConfigUtil getInstance() {
         if (singleton == null) {
-            singleton = new MaterialPrices();
+            singleton = new ConfigUtil();
         }
         return singleton;
     }
@@ -25,6 +25,10 @@ public class MaterialPrices {
 
     public int getCobblestoneCost() {
         return GenWand.getInstance().getConfig().getInt("prices.cobblestone");
+    }
+
+    public int getMaxBlocks() {
+        return GenWand.getInstance().getConfig().getInt("max-blocks");
     }
 
 }

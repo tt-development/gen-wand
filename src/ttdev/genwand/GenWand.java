@@ -77,7 +77,15 @@ public class GenWand extends JavaPlugin implements Listener {
 
         if (label.equalsIgnoreCase("gen")) {
 
-            if (args.length == 1) {
+            if (args.length == 1 && player.hasPermission(usePermission)) {
+
+                if (args[0].equalsIgnoreCase("help")) {
+                    player.sendMessage(ChatColor.YELLOW + "GenWand Help");
+                    player.sendMessage("/gen reload - Reload configuration");
+                    player.sendMessage("/gen wand - Give yourself the edit wand");
+                    player.sendMessage("/gen pos1 - Set first cuboid point");
+                    player.sendMessage("/gen pos2 - Set second cuboid point");
+                }
 
                 if (args[0].equalsIgnoreCase("reload") && player.hasPermission(adminPermission)) {
                     reloadConfig();
@@ -140,17 +148,19 @@ public class GenWand extends JavaPlugin implements Listener {
         }
     }
 
-    public void setPosition(Player player, boolean command, Position position, ItemStack itemInHand) {
+    public boolean setPosition(Player player, boolean command, Position position, ItemStack itemInHand) {
 
-        Location target;
+        Location target = player.getTargetBlock((Set<Material>) null, REACH).getLocation();
 
         if (!command) {
             if (itemInHand == null || !EditWand.isEqual(itemInHand)) {
-                return;
+                return false;
+            }
+            if (!FactionUtil.isInOwnTerritory(target, player)) {
+                player.sendMessage("Only owners of this claim can edit.");
+                return true;
             }
         }
-
-        target = player.getTargetBlock((Set<Material>) null, 200).getLocation();
 
         switch (position) {
             case FIRST:
@@ -162,7 +172,7 @@ public class GenWand extends JavaPlugin implements Listener {
         }
 
         player.sendMessage(position.getFriendlyName() + " position set.");
-
+        return true;
     }
 
     @EventHandler
@@ -172,14 +182,20 @@ public class GenWand extends JavaPlugin implements Listener {
 
         ItemStack itemStack = event.getItem();
 
+        if (!player.hasPermission(usePermission)) {
+            return;
+        }
+
         if (action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
-            setPosition(player, false, Position.FIRST, itemStack);
-            event.setCancelled(true);
+            if (setPosition(player, false, Position.FIRST, itemStack)) {
+                event.setCancelled(true);
+            }
         }
 
         if (action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) {
-            setPosition(player, false, Position.SECOND, itemStack);
-            event.setCancelled(true);
+            if (setPosition(player, false, Position.SECOND, itemStack)) {
+                event.setCancelled(true);
+            }
         }
     }
 

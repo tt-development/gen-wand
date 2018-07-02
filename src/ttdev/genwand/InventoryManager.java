@@ -1,10 +1,5 @@
 package ttdev.genwand;
 
-import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.IncompleteRegionException;
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import com.sk89q.worldedit.blocks.BaseBlock;
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -56,33 +51,30 @@ public class InventoryManager implements InventoryListener {
     public void InventoryClickEvent(InventoryClick event) {
 
         Player player = event.getWhoClicked();
-        WorldEditPlugin worldEdit = GenWand.getWorldEdit();
 
         if (event.getInventory().getName().contains(ChatColor.RED + "Blocks: ")) {
 
             event.cancelAction();
 
+            Selection selection = GenWand.selectionMap.get(player);
+            if (!FactionUtil.isInOwnTerritory(selection.getMinimumPoint(), selection.getMaximumPoint(), player)) {
+                player.sendMessage(ChatColor.RED+"You can only edit your claim.");
+                return;
+            }
+
             if (event.getClickedItem().getName().equals(ChatColor.RED + "Obsidian")) {
-                Selection selection = GenWand.selectionMap.get(player);
-                EditSession session = worldEdit.createEditSession(player);
-                try {
-                    session.setBlocks(selection.getRegionSelector().getRegion(), new BaseBlock(Material.OBSIDIAN.getId()));
-                } catch (IncompleteRegionException | MaxChangedBlocksException e) {
-                    e.printStackTrace();
-                }
-                player.sendMessage("Filled region with obsidian.");
+                WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.OBSIDIAN);
+                event.getWhoClicked().closeInventory();
                 return;
             }
 
             if (event.getClickedItem().getName().equals(ChatColor.AQUA + "Cobblestone")) {
-                //TODO Replace with WorldEdit
-//                Generator.startGenerating(event.getWhoClicked(), Material.COBBLESTONE);
+                WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.COBBLESTONE);
                 event.getWhoClicked().closeInventory();
                 return;
             }
             if (event.getClickedItem().getName().equals(ChatColor.GREEN + "Sand")) {
-                //TODO Replace with WorldEdit
-//                Generator.startGenerating(event.getWhoClicked(), Material.SAND);
+                WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.SAND);
                 event.getWhoClicked().closeInventory();
                 return;
             }
