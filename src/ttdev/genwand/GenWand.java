@@ -114,7 +114,7 @@ public class GenWand extends JavaPlugin implements Listener {
                 Location locationOne = pos1.get(player);
                 Location locationTwo = pos2.get(player);
                 if (locationOne == null || locationTwo == null) {
-                    player.sendMessage(ChatColor.RED + "You must complete your selection first.");
+                    player.sendMessage(ConfigUtil.getInstance().getIncompleteSelectionMessage());
                     return true;
                 }
 
@@ -157,7 +157,7 @@ public class GenWand extends JavaPlugin implements Listener {
                 return false;
             }
             if (!FactionUtil.isInOwnTerritory(target, player)) {
-                player.sendMessage("Only owners of this claim can edit.");
+                player.sendMessage(ConfigUtil.getInstance().getAttemptUnclaimedEditMessage());
                 return true;
             }
         }
@@ -165,13 +165,14 @@ public class GenWand extends JavaPlugin implements Listener {
         switch (position) {
             case FIRST:
                 pos1.put(player, target);
+                player.sendMessage(ConfigUtil.getInstance().getPositionOneSetMessage());
                 break;
             case SECOND:
                 pos2.put(player, target);
+                player.sendMessage(ConfigUtil.getInstance().getPositionTwoSetMessage());
                 break;
         }
 
-        player.sendMessage(position.getFriendlyName() + " position set.");
         return true;
     }
 

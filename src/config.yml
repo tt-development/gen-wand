@@ -13,3 +13,11 @@ prices:
   obsidian: 50
   cobblestone: 30
   sand: 10
+
+# Message configuration
+message:
+  incomplete-selection: 'You must complete your selection first.'
+  attempt-unclaimed-edit: 'Only owners of this claim can edit.'
+  edit-success: 'Edit successful.'
+  pos1-set: 'Position 1 set.'
+  pos2-set: 'Position 2 set.'

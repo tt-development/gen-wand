@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import ttdev.api.APair;
 import ttdev.api.bukkit.Manager;
 import ttdev.api.user.inventory.AInventory;
 import ttdev.api.user.inventory.events.inventoryclick.InventoryClick;
@@ -58,26 +59,40 @@ public class InventoryManager implements InventoryListener {
 
             Selection selection = GenWand.selectionMap.get(player);
             if (!FactionUtil.isInOwnTerritory(selection.getMinimumPoint(), selection.getMaximumPoint(), player)) {
-                player.sendMessage(ChatColor.RED+"You can only edit your claim.");
+                player.sendMessage(ChatColor.RED + "You can only edit your claim.");
                 return;
             }
 
+            // A pair representing the number of affected blocks and the area of the selection
+            APair<Integer, Integer> affectedArea;
+
             if (event.getClickedItem().getName().equals(ChatColor.RED + "Obsidian")) {
-                WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.OBSIDIAN);
+                affectedArea = WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.OBSIDIAN);
                 event.getWhoClicked().closeInventory();
+                if (affectedArea.getKey().equals(affectedArea.getValue())) {
+                    System.out.println("Key " + affectedArea.getKey() + ", Value: " + affectedArea.getValue());
+                    player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+                }
                 return;
             }
 
             if (event.getClickedItem().getName().equals(ChatColor.AQUA + "Cobblestone")) {
-                WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.COBBLESTONE);
+                affectedArea = WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.COBBLESTONE);
                 event.getWhoClicked().closeInventory();
+                if (affectedArea.getKey().equals(affectedArea.getValue())) {
+                    player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+                }
                 return;
             }
             if (event.getClickedItem().getName().equals(ChatColor.GREEN + "Sand")) {
-                WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.SAND);
+                affectedArea = WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.SAND);
                 event.getWhoClicked().closeInventory();
+                if (affectedArea.getKey().equals(affectedArea.getValue())) {
+                    player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+                }
                 return;
             }
+
         }
     }
 

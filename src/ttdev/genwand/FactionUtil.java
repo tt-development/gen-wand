@@ -29,7 +29,7 @@ public class FactionUtil {
     public static boolean isInOwnTerritory(Location location, Player player) {
         MPlayer mPlayer = MPlayer.get(player);
         Faction faction = BoardColl.get().getFactionAt(PS.valueOf(location));
-        return faction!=null&&mPlayer.getFaction()==faction;
+        return faction != null && mPlayer.getFaction() == faction;
     }
 
 }

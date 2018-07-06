@@ -1,5 +1,7 @@
 package ttdev.genwand;
 
+import org.bukkit.ChatColor;
+
 public class ConfigUtil {
 
     private static ConfigUtil singleton;
@@ -31,4 +33,28 @@ public class ConfigUtil {
         return GenWand.getInstance().getConfig().getInt("max-blocks");
     }
 
+    public String getIncompleteSelectionMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.incomplete-selection");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getAttemptUnclaimedEditMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.attempt-unclaimed-edit");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getEditSuccessMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.edit-success");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getPositionOneSetMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.pos1-set");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getPositionTwoSetMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.pos2-set");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
 }
