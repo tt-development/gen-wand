@@ -72,6 +72,7 @@ public class InventoryManager implements InventoryListener {
                 if (affectedArea.getKey().equals(affectedArea.getValue())) {
                     System.out.println("Key " + affectedArea.getKey() + ", Value: " + affectedArea.getValue());
                     player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+                    CooldownManager.add(player);
                 }
                 return;
             }
@@ -81,6 +82,7 @@ public class InventoryManager implements InventoryListener {
                 event.getWhoClicked().closeInventory();
                 if (affectedArea.getKey().equals(affectedArea.getValue())) {
                     player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+                    CooldownManager.add(player);
                 }
                 return;
             }
@@ -89,6 +91,7 @@ public class InventoryManager implements InventoryListener {
                 event.getWhoClicked().closeInventory();
                 if (affectedArea.getKey().equals(affectedArea.getValue())) {
                     player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+                    CooldownManager.add(player);
                 }
                 return;
             }

@@ -17,11 +17,15 @@ public class EditWand {
     }
 
     public static ItemStack getEditWand() {
+        return getEditWand(1);
+    }
+
+    public static ItemStack getEditWand(int amount){
         if (genTool != null) {
             return genTool;
         }
         int editToolId = Integer.parseInt(GenWand.getInstance().getConfig().getString("edit-tool"));
-        genTool = new ItemStack(editToolId, 1, (short) 0);
+        genTool = new ItemStack(editToolId, amount, (short) 0);
         ItemMeta meta = genTool.getItemMeta();
         meta.setDisplayName(name);
         genTool.setItemMeta(meta);

@@ -4,6 +4,6 @@ version: 1.0
 author: [Tre, Thomas]
 depends: [WorldEdit, API, Factions, MassiveCore]
 commands:
-  gen:
+  gw:
     description: GenWand
     permission: genwand.use

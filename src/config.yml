@@ -6,7 +6,7 @@ edit-tool: 280
 max-blocks: 100
 
 # Delay in seconds
-delay:
+delay: 20
 
 # Material prices
 prices:
@@ -16,8 +16,20 @@ prices:
 
 # Message configuration
 message:
-  incomplete-selection: 'You must complete your selection first.'
-  attempt-unclaimed-edit: 'Only owners of this claim can edit.'
-  edit-success: 'Edit successful.'
-  pos1-set: 'Position 1 set.'
-  pos2-set: 'Position 2 set.'
+  # When a player is a given an edit wand.
+  wand-received: '&aEdit wand received.'
+
+  # When the player attempts to use /gen without a complete cuboid selection.
+  incomplete-selection: '&cYou must complete your selection first.'
+
+  # When the player attempts to edit a chunk that isn't owned by their faction.
+  attempt-unclaimed-edit: '&cOnly owners of this claim can edit.'
+
+  # When /gen succeeds and all blocks have been placed.
+  edit-success: '&aEdit successful.'
+
+  # When the players cooldown is over.
+  edit-available: '&eEdit wand ready.'
+
+  pos1-set: '&ePosition 1 set.'
+  pos2-set: '&ePosition 2 set.'

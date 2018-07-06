@@ -33,6 +33,15 @@ public class ConfigUtil {
         return GenWand.getInstance().getConfig().getInt("max-blocks");
     }
 
+    public int getDelay() {
+        return GenWand.getInstance().getConfig().getInt("delay");
+    }
+
+    public String getWandReceivedMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.wand-received");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public String getIncompleteSelectionMessage() {
         final String message = GenWand.getInstance().getConfig().getString("message.incomplete-selection");
         return ChatColor.translateAlternateColorCodes('&', message);
@@ -45,6 +54,11 @@ public class ConfigUtil {
 
     public String getEditSuccessMessage() {
         final String message = GenWand.getInstance().getConfig().getString("message.edit-success");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getEditAvailableMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.edit-available");
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 

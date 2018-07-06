@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -75,9 +76,9 @@ public class GenWand extends JavaPlugin implements Listener {
 
         Player player = (Player) sender;
 
-        if (label.equalsIgnoreCase("gen")) {
+        if (label.equalsIgnoreCase("gw")) {
 
-            if (args.length == 1 && player.hasPermission(usePermission)) {
+            if (args.length > 0 && player.hasPermission(usePermission)) {
 
                 if (args[0].equalsIgnoreCase("help")) {
                     player.sendMessage(ChatColor.YELLOW + "GenWand Help");
@@ -90,6 +91,48 @@ public class GenWand extends JavaPlugin implements Listener {
                 if (args[0].equalsIgnoreCase("reload") && player.hasPermission(adminPermission)) {
                     reloadConfig();
                     player.sendMessage(getName() + " reloaded.");
+                    return true;
+                }
+
+                if (args[0].equalsIgnoreCase("give") && args.length >= 2) {
+                    // Give without amount
+                    if (args.length == 2) {
+                        Player givePlayer = Bukkit.getPlayer(args[1]);
+                        if (givePlayer == null) {
+                            player.sendMessage(ChatColor.RED + "Player not found.");
+                            return true;
+                        }
+                        givePlayer.getInventory().addItem(EditWand.getEditWand());
+                        givePlayer.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                    }
+                    // Give with amount
+                    else if (args.length == 3) {
+                        Player givePlayer = Bukkit.getPlayer(args[1]);
+                        if (givePlayer == null) {
+                            player.sendMessage(ChatColor.RED + "Player not found.");
+                            return true;
+                        }
+                        int amount = Integer.parseInt(args[2]);
+                        givePlayer.getInventory().addItem(EditWand.getEditWand(amount));
+                        givePlayer.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                    } else {
+                        player.sendMessage(ChatColor.RED + "Incorrect syntax.");
+                        return false;
+                    }
+                }
+
+                if (args[0].equalsIgnoreCase("gen")) {
+                    Location locationOne = pos1.get(player);
+                    Location locationTwo = pos2.get(player);
+                    if (locationOne == null || locationTwo == null) {
+                        player.sendMessage(ConfigUtil.getInstance().getIncompleteSelectionMessage());
+                        return true;
+                    }
+
+                    CuboidSelection selection = new CuboidSelection(player.getWorld(), locationOne, locationTwo);
+                    selectionMap.put(player, selection);
+
+                    InventoryManager.openInventory(player);
                     return true;
                 }
 
@@ -110,18 +153,8 @@ public class GenWand extends JavaPlugin implements Listener {
 
                 player.sendMessage(ChatColor.RED + "Incorrect syntax: /gen pos1 ; /gen pos2");
 
-            } else {
-                Location locationOne = pos1.get(player);
-                Location locationTwo = pos2.get(player);
-                if (locationOne == null || locationTwo == null) {
-                    player.sendMessage(ConfigUtil.getInstance().getIncompleteSelectionMessage());
-                    return true;
-                }
-
-                CuboidSelection selection = new CuboidSelection(player.getWorld(), locationOne, locationTwo);
-                selectionMap.put(player, selection);
-
-                InventoryManager.openInventory(player);
+            } else if (!player.hasPermission(usePermission)) {
+                player.sendMessage(ChatColor.RED + "No permission.");
             }
 
         }
