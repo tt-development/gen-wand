@@ -113,6 +113,7 @@ public class GenWand extends JavaPlugin implements Listener {
                             return true;
                         }
                         int amount = Integer.parseInt(args[2]);
+                        System.out.println("amount:" + amount);
                         givePlayer.getInventory().addItem(EditWand.getEditWand(amount));
                         givePlayer.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
                     } else {
@@ -137,7 +138,14 @@ public class GenWand extends JavaPlugin implements Listener {
                 }
 
                 if (args[0].equalsIgnoreCase("wand")) {
-                    player.getInventory().addItem(EditWand.getEditWand());
+                    if (args.length == 1) {
+                        player.getInventory().addItem(EditWand.getEditWand());
+                        player.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                    } else if (args.length == 2) {
+                        int amount = Integer.parseInt(args[1]);
+                        player.getInventory().addItem(EditWand.getEditWand(amount));
+                        player.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                    }
                     return true;
                 }
 
@@ -150,8 +158,6 @@ public class GenWand extends JavaPlugin implements Listener {
                     setPosition(player, true, Position.SECOND, null);
                     return true;
                 }
-
-                player.sendMessage(ChatColor.RED + "Incorrect syntax: /gen pos1 ; /gen pos2");
 
             } else if (!player.hasPermission(usePermission)) {
                 player.sendMessage(ChatColor.RED + "No permission.");
