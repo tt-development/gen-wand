@@ -1,9 +1,9 @@
-name: Genwand
+name: GenWand
 main: ttdev.genwand.GenWand
-depends: [Vault]
-authors: [Thomas, Tre]
 version: 1.0
+author: [Tre, Thomas]
+depends: [WorldEdit, API]
 commands:
-   gen:
-      description: Main genwand command.
-      usage: /<command>
+  gen:
+    description: GenWand
+    permission: genwand.use

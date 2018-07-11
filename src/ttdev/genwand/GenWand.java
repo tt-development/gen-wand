@@ -1,9 +1,9 @@
 package ttdev.genwand;
 
-import java.util.HashMap;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.bukkit.selections.Selection;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,16 +15,24 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BlockIterator;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
 
 public class GenWand extends JavaPlugin implements Listener {
 
     public static HashMap<Player, Location> pos1 = new HashMap<>();
     public static HashMap<Player, Location> pos2 = new HashMap<>();
 
+    public static Map<Player, Selection> selectionMap = new HashMap<>();
+
     private static GenWand singleton;
+    private static WorldEditPlugin worldEdit;
 
     private static final String usePermission = "genwand.use";
     private static final String adminPermission = "genwand.admin";
@@ -38,14 +46,17 @@ public class GenWand extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         singleton = this;
-        
-        Bukkit.getPluginManager().registerEvents(this, this);
-        Bukkit.getPluginManager().addPermission(new Permission(usePermission));
-        Bukkit.getPluginManager().addPermission(new Permission(adminPermission));
-        
+
+        PluginManager pluginManager = getServer().getPluginManager();
+        worldEdit = (WorldEditPlugin) pluginManager.getPlugin("WorldEdit");
+        if (worldEdit == null) {
+            getLogger().log(Level.WARNING, "Couldn't find plugin \"WorldEdit\"");
+        }
+
+        pluginManager.registerEvents(this, this);
+
         //Configuration
         this.getConfig().addDefault("items", "");
-        this.getConfig().addDefault("edit-tool", "200");
         this.getConfig().options().copyDefaults(true);
         this.saveConfig();
     }
@@ -99,6 +110,9 @@ public class GenWand extends JavaPlugin implements Listener {
                     return true;
                 }
 
+                CuboidSelection selection = new CuboidSelection(player.getWorld(), locationOne, locationTwo);
+                selectionMap.put(player, selection);
+
                 InventoryManager.openInventory(player);
             }
 
@@ -106,6 +120,10 @@ public class GenWand extends JavaPlugin implements Listener {
 
         return true;
 
+    }
+
+    public static WorldEditPlugin getWorldEdit() {
+        return worldEdit;
     }
 
     private enum Position {
@@ -131,8 +149,8 @@ public class GenWand extends JavaPlugin implements Listener {
                 return;
             }
         }
-        
-        target = getTargetBlock(player, REACH).getLocation();
+
+        target = player.getTargetBlock((Set<Material>) null, 200).getLocation();
 
         switch (position) {
             case FIRST:
@@ -151,16 +169,9 @@ public class GenWand extends JavaPlugin implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Action action = event.getAction();
-        
-        if (event.getItem() == null) {
-        	return;
-        }
 
         ItemStack itemStack = event.getItem();
-        
-        if (!itemStack.equals(EditWand.getEditWand())) {
-        	return;
-        }
+
         if (action == Action.LEFT_CLICK_BLOCK || action == Action.LEFT_CLICK_AIR) {
             setPosition(player, false, Position.FIRST, itemStack);
             event.setCancelled(true);
@@ -172,6 +183,7 @@ public class GenWand extends JavaPlugin implements Listener {
         }
     }
 
+    //Get target block.
     public final Block getTargetBlock(Player player, Integer range) {
         BlockIterator bi = new BlockIterator(player, range);
         Block lastBlock = bi.next();
