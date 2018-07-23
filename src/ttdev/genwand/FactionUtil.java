@@ -11,12 +11,6 @@ import java.util.Objects;
 
 public class FactionUtil {
 
-    public static boolean isInOwnTerritory(Player player) {
-        MPlayer mPlayer = MPlayer.get(player);
-        System.out.println("Checking territory of " + mPlayer.getName());
-        return mPlayer.isInOwnTerritory() && mPlayer.hasFaction();
-    }
-
     public static boolean isInOwnTerritory(Location locationOne, Location locationTwo, Player player) {
         MPlayer mPlayer = MPlayer.get(player);
         Faction factionOne = BoardColl.get().getFactionAt(PS.valueOf(locationOne));
