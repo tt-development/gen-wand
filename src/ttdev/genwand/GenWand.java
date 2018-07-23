@@ -29,8 +29,8 @@ import java.util.logging.Level;
 
 public class GenWand extends JavaPlugin implements Listener {
 
-    public static HashMap<Player, Location> pos1 = new HashMap<>();
-    public static HashMap<Player, Location> pos2 = new HashMap<>();
+    private static HashMap<Player, Location> pos1 = new HashMap<>();
+    private static HashMap<Player, Location> pos2 = new HashMap<>();
 
     public static Map<Player, Selection> selectionMap = new HashMap<>();
 
