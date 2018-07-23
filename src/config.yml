@@ -19,6 +19,9 @@ message:
   # When a player is a given an edit wand.
   wand-received: '&aEdit wand received.'
 
+  # When the player attemps to make an edit without having enough money.
+  not-enough-money: '&cNot enough money'
+
   # When the player attempts to use /gen without a complete cuboid selection.
   incomplete-selection: '&cYou must complete your selection first.'
 

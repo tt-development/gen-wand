@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import net.md_5.bungee.api.ChatColor;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.BlockIterator;
 
@@ -34,9 +36,11 @@ public class GenWand extends JavaPlugin implements Listener {
 
     private static GenWand singleton;
     private static WorldEditPlugin worldEdit;
+    private static Economy economy;
 
     public static final String USE_PERMISSION = "genwand.use";
     public static final String ADMIN_PERMISSION = "genwand.admin";
+    public static final String NOPAY_PERMISSION="genwand.nopay";
 
     private static final int REACH = 200;
 
@@ -171,6 +175,20 @@ public class GenWand extends JavaPlugin implements Listener {
 
     public static WorldEditPlugin getWorldEdit() {
         return worldEdit;
+    }
+
+    public static Economy getEconomy(){
+        return economy;
+    }
+
+    private boolean setupEconomy()
+    {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
     }
 
     private enum Position {

@@ -1,10 +1,10 @@
 package ttdev.genwand;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import ttdev.api.APair;
 import ttdev.api.bukkit.Manager;
 import ttdev.api.user.inventory.AInventory;
 import ttdev.api.user.inventory.events.inventoryclick.InventoryClick;
@@ -66,46 +66,63 @@ public class InventoryManager implements InventoryListener {
                 return;
             }
 
-            // A pair representing the number of affected blocks and the area of the selection
-            APair<Integer, Integer> affectedArea;
-
             if (event.getClickedItem().getName().equals(ChatColor.RED + "Obsidian")) {
-                affectedArea = WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.OBSIDIAN);
-                event.getWhoClicked().closeInventory();
-                if (affectedArea.getKey().equals(affectedArea.getValue())) {
-                    System.out.println("Key " + affectedArea.getKey() + ", Value: " + affectedArea.getValue());
-                    player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
-                    if(!admin) {
-                        CooldownManager.add(player);
-                    }
+                boolean valid=validateEdit(player,MaterialType.OBSIDIAN,selection.getArea());
+                if(valid){
+                    WorldEditUtil.setBlocks(player.getWorld(),GenWand.selectionMap.get(player),Material.OBSIDIAN);
                 }
-                return;
             }
 
             if (event.getClickedItem().getName().equals(ChatColor.AQUA + "Cobblestone")) {
-                affectedArea = WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.COBBLESTONE);
-                event.getWhoClicked().closeInventory();
-                if (affectedArea.getKey().equals(affectedArea.getValue())) {
-                    player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
-                    if(!admin) {
-                        CooldownManager.add(player);
-                    }
+                boolean valid=validateEdit(player,MaterialType.COBBLESTONE,selection.getArea());
+                if(valid){
+                    WorldEditUtil.setBlocks(player.getWorld(),GenWand.selectionMap.get(player),Material.COBBLESTONE);
                 }
-                return;
             }
             if (event.getClickedItem().getName().equals(ChatColor.GREEN + "Sand")) {
-                affectedArea = WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.SAND);
-                event.getWhoClicked().closeInventory();
-                if (affectedArea.getKey().equals(affectedArea.getValue())) {
-                    player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
-                    if(!admin) {
-                        CooldownManager.add(player);
-                    }
+                boolean valid=validateEdit(player,MaterialType.SAND,selection.getArea());
+                if(valid){
+                    WorldEditUtil.setBlocks(player.getWorld(),GenWand.selectionMap.get(player),Material.SAND);
                 }
                 return;
             }
 
         }
+    }
+
+    private boolean validateEdit(Player player,MaterialType materialType,int selection){
+        player.closeInventory();
+        int cost=0;
+        switch(materialType){
+            case OBSIDIAN:
+                cost=ConfigUtil.getInstance().getObsidianCost()*selection;
+                break;
+            case COBBLESTONE:
+                cost=ConfigUtil.getInstance().getCobblestoneCost()*selection;
+                break;
+            case SAND:
+                cost=ConfigUtil.getInstance().getSandCost()*selection;
+                break;
+        }
+
+        if(!player.hasPermission(GenWand.ADMIN_PERMISSION)){
+            CooldownManager.add(player);
+        }
+        if(!player.hasPermission(GenWand.NOPAY_PERMISSION)){
+            Economy economy=GenWand.getEconomy();
+            double balance=economy.getBalance(player);
+            if(balance<cost){
+                player.sendMessage(ConfigUtil.getInstance().getNotEnoughMoneyMessage());
+                return false;
+            }
+            economy.withdrawPlayer(player,cost);
+            player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+        }
+        return true;
+    }
+
+    private enum MaterialType {
+        OBSIDIAN,COBBLESTONE,SAND;
     }
 
 }

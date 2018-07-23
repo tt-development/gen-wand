@@ -42,6 +42,11 @@ public class ConfigUtil {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public String getNotEnoughMoneyMessage(){
+        final String message=GenWand.getInstance().getConfig().getString("message.not-enough-money");
+        return ChatColor.translateAlternateColorCodes('&',message);
+    }
+
     public String getIncompleteSelectionMessage() {
         final String message = GenWand.getInstance().getConfig().getString("message.incomplete-selection");
         return ChatColor.translateAlternateColorCodes('&', message);
