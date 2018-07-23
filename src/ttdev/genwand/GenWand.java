@@ -35,8 +35,8 @@ public class GenWand extends JavaPlugin implements Listener {
     private static GenWand singleton;
     private static WorldEditPlugin worldEdit;
 
-    private static final String usePermission = "genwand.use";
-    private static final String adminPermission = "genwand.admin";
+    public static final String USE_PERMISSION = "genwand.use";
+    public static final String ADMIN_PERMISSION = "genwand.admin";
 
     private static final int REACH = 200;
 
@@ -78,7 +78,7 @@ public class GenWand extends JavaPlugin implements Listener {
 
         if (label.equalsIgnoreCase("gw")) {
 
-            if (args.length > 0 && player.hasPermission(usePermission)) {
+            if (args.length > 0 && player.hasPermission(USE_PERMISSION)) {
 
                 if (args[0].equalsIgnoreCase("help")) {
                     player.sendMessage(ChatColor.YELLOW + "GenWand Help");
@@ -88,7 +88,7 @@ public class GenWand extends JavaPlugin implements Listener {
                     player.sendMessage("/gen pos2 - Set second cuboid point");
                 }
 
-                if (args[0].equalsIgnoreCase("reload") && player.hasPermission(adminPermission)) {
+                if (args[0].equalsIgnoreCase("reload") && player.hasPermission(ADMIN_PERMISSION)) {
                     reloadConfig();
                     player.sendMessage(getName() + " reloaded.");
                     return true;
@@ -159,7 +159,7 @@ public class GenWand extends JavaPlugin implements Listener {
                     return true;
                 }
 
-            } else if (!player.hasPermission(usePermission)) {
+            } else if (!player.hasPermission(USE_PERMISSION)) {
                 player.sendMessage(ChatColor.RED + "No permission.");
             }
 
@@ -222,7 +222,7 @@ public class GenWand extends JavaPlugin implements Listener {
 
         ItemStack itemStack = event.getItem();
 
-        if (!player.hasPermission(usePermission)) {
+        if (!player.hasPermission(USE_PERMISSION)) {
             return;
         }
 

@@ -57,8 +57,11 @@ public class InventoryManager implements InventoryListener {
 
             event.cancelAction();
 
+            /* Check if the player can bypass claims (is admin) */
+            boolean admin=player.hasPermission(GenWand.ADMIN_PERMISSION);
+
             Selection selection = GenWand.selectionMap.get(player);
-            if (!FactionUtil.isInOwnTerritory(selection.getMinimumPoint(), selection.getMaximumPoint(), player)) {
+            if (!admin && !FactionUtil.isInOwnTerritory(selection.getMinimumPoint(), selection.getMaximumPoint(), player)) {
                 player.sendMessage(ChatColor.RED + "You can only edit your claim.");
                 return;
             }
@@ -72,7 +75,9 @@ public class InventoryManager implements InventoryListener {
                 if (affectedArea.getKey().equals(affectedArea.getValue())) {
                     System.out.println("Key " + affectedArea.getKey() + ", Value: " + affectedArea.getValue());
                     player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
-                    CooldownManager.add(player);
+                    if(!admin) {
+                        CooldownManager.add(player);
+                    }
                 }
                 return;
             }
@@ -82,7 +87,9 @@ public class InventoryManager implements InventoryListener {
                 event.getWhoClicked().closeInventory();
                 if (affectedArea.getKey().equals(affectedArea.getValue())) {
                     player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
-                    CooldownManager.add(player);
+                    if(!admin) {
+                        CooldownManager.add(player);
+                    }
                 }
                 return;
             }
@@ -91,7 +98,9 @@ public class InventoryManager implements InventoryListener {
                 event.getWhoClicked().closeInventory();
                 if (affectedArea.getKey().equals(affectedArea.getValue())) {
                     player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
-                    CooldownManager.add(player);
+                    if(!admin) {
+                        CooldownManager.add(player);
+                    }
                 }
                 return;
             }
