@@ -1,7 +1,8 @@
 package ttdev.genwand;
 
+import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.massivecore.money.Money;
 import com.sk89q.worldedit.bukkit.selections.Selection;
-import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -35,9 +36,16 @@ public class InventoryManager implements InventoryListener {
         cobblestone.setName("&bCobblestone");
         sand.setName("&aSand");
 
-        obsidian.addLore("Click to fill selection with obsidian.");
-        cobblestone.addLore("Click to fill selection with cobblestone.");
-        sand.addLore("Click to fill selection with sand.");
+        int[] costs=calculateCosts(size);
+
+        obsidian.addLore("&fClick to fill selection with obsidian.");
+        obsidian.addLore("&a$"+costs[0]);
+
+        cobblestone.addLore("&fClick to fill selection with cobblestone.");
+        cobblestone.addLore("&a$"+costs[1]);
+
+        sand.addLore("&fClick to fill selection with sand.");
+        sand.addLore("&a$"+costs[2]);
 
         inventory.setItem(obsidian, 2);
         inventory.setItem(cobblestone, 4);
@@ -46,6 +54,13 @@ public class InventoryManager implements InventoryListener {
         player.openInventory(inventory.getInventory());
     }
 
+    private static int[] calculateCosts(int area){
+        int[] costs=new int[3];
+        costs[0]=ConfigUtil.getInstance().getObsidianCost()*area;
+        costs[1]=ConfigUtil.getInstance().getCobblestoneCost()*area;
+        costs[2]=ConfigUtil.getInstance().getSandCost()*area;
+        return costs;
+    }
 
     @Override
     public void InventoryClickEvent(InventoryClick event) {
@@ -108,13 +123,29 @@ public class InventoryManager implements InventoryListener {
             CooldownManager.add(player);
         }
         if (!player.hasPermission(GenWand.NOPAY_PERMISSION)) {
-            Economy economy = GenWand.getEconomy();
-            double balance = economy.getBalance(player);
-            if (balance < cost) {
+
+            /* If the player is in a faction then the money will be taken
+            from the faction balance, otherwise it will be take from their
+            balance.
+             */
+            double money;
+
+            MPlayer mPlayer = MPlayer.get(player);
+            money = (mPlayer.hasFaction()) ? Money.get(mPlayer.getFaction()) : GenWand.getEconomy().getBalance(player);
+
+            if (money < cost) {
                 player.sendMessage(ConfigUtil.getInstance().getNotEnoughMoneyMessage());
                 return false;
             }
-            economy.withdrawPlayer(player, cost);
+
+            if (mPlayer.hasFaction()) {
+                Money.set(mPlayer.getFaction(), null, money - cost);
+                player.sendMessage(ChatColor.RED + "$" + cost + " has been removed from the faction balance.");
+            } else {
+                GenWand.getEconomy().withdrawPlayer(player, cost);
+                player.sendMessage(ChatColor.RED + "$" + cost + " has been removed from your account.");
+            }
+
             player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
         }
         return true;

@@ -2,7 +2,7 @@ name: GenWand
 main: ttdev.genwand.GenWand
 version: 1.0
 author: [Tre, Thomas]
-depends: [WorldEdit, API, Factions, MassiveCore]
+depends: [Vault, WorldEdit, API, Factions, MassiveCore]
 commands:
   gw:
     description: GenWand

@@ -40,7 +40,7 @@ public class GenWand extends JavaPlugin implements Listener {
 
     public static final String USE_PERMISSION = "genwand.use";
     public static final String ADMIN_PERMISSION = "genwand.admin";
-    public static final String NOPAY_PERMISSION="genwand.nopay";
+    public static final String NOPAY_PERMISSION = "genwand.nopay";
 
     private static final int REACH = 200;
 
@@ -51,6 +51,10 @@ public class GenWand extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         singleton = this;
+
+        if(!setupEconomy()){
+            getLogger().log(Level.WARNING,"Couldn't enable Economy.");
+        }
 
         PluginManager pluginManager = getServer().getPluginManager();
         worldEdit = (WorldEditPlugin) pluginManager.getPlugin("WorldEdit");
@@ -82,15 +86,15 @@ public class GenWand extends JavaPlugin implements Listener {
 
         if (label.equalsIgnoreCase("gw")) {
 
+            if (player.hasPermission(USE_PERMISSION) && ((args.length > 0 && args[0].equalsIgnoreCase("help"))) || args.length == 0) {
+                player.sendMessage(ChatColor.YELLOW + "GenWand Help Menu:");
+                player.sendMessage("/gw reload - Reload configuration");
+                player.sendMessage("/gw wand [amount] - Give yourself the edit wand");
+                player.sendMessage("/gw give <player> [amount] - Give somebody else the edit wand");
+                player.sendMessage("/gw pos1 - Set first cuboid point");
+                player.sendMessage("/gw pos2 - Set second cuboid point");
+            }
             if (args.length > 0 && player.hasPermission(USE_PERMISSION)) {
-
-                if (args[0].equalsIgnoreCase("help")) {
-                    player.sendMessage(ChatColor.YELLOW + "GenWand Help");
-                    player.sendMessage("/gen reload - Reload configuration");
-                    player.sendMessage("/gen wand - Give yourself the edit wand");
-                    player.sendMessage("/gen pos1 - Set first cuboid point");
-                    player.sendMessage("/gen pos2 - Set second cuboid point");
-                }
 
                 if (args[0].equalsIgnoreCase("reload") && player.hasPermission(ADMIN_PERMISSION)) {
                     reloadConfig();
@@ -117,7 +121,6 @@ public class GenWand extends JavaPlugin implements Listener {
                             return true;
                         }
                         int amount = Integer.parseInt(args[2]);
-                        System.out.println("amount:" + amount);
                         givePlayer.getInventory().addItem(EditWand.getEditWand(amount));
                         givePlayer.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
                     } else {
@@ -177,12 +180,11 @@ public class GenWand extends JavaPlugin implements Listener {
         return worldEdit;
     }
 
-    public static Economy getEconomy(){
+    public static Economy getEconomy() {
         return economy;
     }
 
-    private boolean setupEconomy()
-    {
+    private boolean setupEconomy() {
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
@@ -192,17 +194,7 @@ public class GenWand extends JavaPlugin implements Listener {
     }
 
     private enum Position {
-        FIRST("First"), SECOND("Second");
-
-        private String friendlyName;
-
-        Position(String friendlyName) {
-            this.friendlyName = friendlyName;
-        }
-
-        public String getFriendlyName() {
-            return friendlyName;
-        }
+        FIRST,SECOND
     }
 
     public boolean setPosition(Player player, boolean command, Position position, ItemStack itemInHand) {
@@ -238,9 +230,10 @@ public class GenWand extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         Action action = event.getAction();
 
-        ItemStack itemStack = event.getItem();
+        ItemStack itemStack=event.getItem();
 
-        if (!player.hasPermission(USE_PERMISSION)) {
+        if (!player.hasPermission(USE_PERMISSION)&&EditWand.isEqual(itemStack)) {
+            player.sendMessage(ChatColor.RED+"No permission.");
             return;
         }
 
