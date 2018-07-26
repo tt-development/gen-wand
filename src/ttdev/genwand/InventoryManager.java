@@ -1,9 +1,10 @@
 package ttdev.genwand;
 
-
+import com.massivecraft.factions.entity.MPlayer;
+import com.massivecraft.massivecore.money.Money;
+import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import ttdev.api.bukkit.Manager;
 import ttdev.api.user.inventory.AInventory;
@@ -12,92 +13,146 @@ import ttdev.api.user.inventory.events.inventoryclick.InventoryListener;
 import ttdev.api.user.items.Item;
 
 public class InventoryManager implements InventoryListener {
-	
-	static {
-		new InventoryManager();
-	}
-	
-	private InventoryManager() {
-		Manager.registerEvent(this);
-	}
-	
-	public static void openInventory(Player player) {
 
-		if (!GenWand.pos1.containsKey(player)) {
-			return;
-		}
-		if (!GenWand.pos2.containsKey(player)) {
-			return;
-		}
-		
-		//Calculate the amount of blocks
-		Block pos1 = GenWand.pos1.get(player).getBlock();
-		Block pos2 = GenWand.pos2.get(player).getBlock();
-		
-		int xPos = pos1.getX() - pos2.getX();
-		int yPos = pos1.getY() - pos2.getY();
-		int zPos = pos1.getZ() - pos2.getZ();
-		
-		if (xPos < 1) {
-			xPos = xPos * -1;
-		}
-		if (yPos < 1) {
-			yPos = yPos * -1;
-		}
-		if (zPos < 1) {
-			zPos = zPos * -1;
-		}
-		int totalBlocks = (xPos + 1) * (yPos + 1) * (zPos + 1);
-		
-		//Create the inventory.
-		AInventory inventory = new AInventory("&cBlocks: " + totalBlocks, 1);
-		
-		
-		Item obsidian = new Item(Material.OBSIDIAN);
-		Item cobblestone = new Item(Material.COBBLESTONE);
-		Item sand = new Item(Material.SAND);
-		
-		//TODO Configuration
-		obsidian.setName("&cObsidian");
-		cobblestone.setName("&bCobblestone");
-		sand.setName("&aSand");
-	
-		obsidian.addLore("Lore");
-		cobblestone.addLore("Lore");
-		sand.addLore("Lore");
-		
-		inventory.setItem(obsidian, 2);
-		inventory.setItem(cobblestone, 4);
-		inventory.setItem(sand, 6);
-		
-		player.openInventory(inventory.getInventory());
-	}
+    static {
+        new InventoryManager();
+    }
 
+    private InventoryManager() {
+        Manager.registerEvent(this);
+    }
 
+    public static void openInventory(Player player) {
 
-	@Override
-	public void InventoryClickEvent(InventoryClick event) {
-		
-		if (event.getInventory().getName().contains(ChatColor.RED + "Blocks: ")) {
-			
-			event.cancelAction();
-			
-			 if (event.getClickedItem().getName().equals(ChatColor.RED + "Obsidian")) {
-				 Generator.startGenerating(event.getWhoClicked(), Material.OBSIDIAN);
-				 event.getWhoClicked().closeInventory();
-				 return;
-			 }
-			 if (event.getClickedItem().getName().equals(ChatColor.AQUA + "Cobblestone")) {
-				 Generator.startGenerating(event.getWhoClicked(), Material.COBBLESTONE);
-				 event.getWhoClicked().closeInventory();
-				 return;
-			 }
-			 if (event.getClickedItem().getName().equals(ChatColor.GREEN + "Sand")) {
-				 Generator.startGenerating(event.getWhoClicked(), Material.SAND);
-				 event.getWhoClicked().closeInventory();
-				 return;
-			 }
-		}
-	}
-	
+        int size = GenWand.selectionMap.get(player).getArea();
+
+        AInventory inventory = new AInventory("&cBlocks: " + size, 1);
+
+        Item obsidian = new Item(Material.OBSIDIAN);
+        Item cobblestone = new Item(Material.COBBLESTONE);
+        Item sand = new Item(Material.SAND);
+
+        obsidian.setName("&cObsidian");
+        cobblestone.setName("&bCobblestone");
+        sand.setName("&aSand");
+
+        int[] costs=calculateCosts(size);
+
+        obsidian.addLore("&fClick to fill selection with obsidian.");
+        obsidian.addLore("&a$"+costs[0]);
+
+        cobblestone.addLore("&fClick to fill selection with cobblestone.");
+        cobblestone.addLore("&a$"+costs[1]);
+
+        sand.addLore("&fClick to fill selection with sand.");
+        sand.addLore("&a$"+costs[2]);
+
+        inventory.setItem(obsidian, 2);
+        inventory.setItem(cobblestone, 4);
+        inventory.setItem(sand, 6);
+
+        player.openInventory(inventory.getInventory());
+    }
+
+    private static int[] calculateCosts(int area){
+        int[] costs=new int[3];
+        costs[0]=ConfigUtil.getInstance().getObsidianCost()*area;
+        costs[1]=ConfigUtil.getInstance().getCobblestoneCost()*area;
+        costs[2]=ConfigUtil.getInstance().getSandCost()*area;
+        return costs;
+    }
+
+    @Override
+    public void InventoryClickEvent(InventoryClick event) {
+
+        Player player = event.getWhoClicked();
+
+        if (event.getInventory().getName().contains(ChatColor.RED + "Blocks: ")) {
+
+            event.cancelAction();
+
+            /* Check if the player can bypass claims (is admin) */
+            boolean admin = player.hasPermission(GenWand.ADMIN_PERMISSION);
+
+            Selection selection = GenWand.selectionMap.get(player);
+            if (!admin && !FactionUtil.isInOwnTerritory(selection.getMinimumPoint(), selection.getMaximumPoint(), player)) {
+                player.sendMessage(ChatColor.RED + "You can only edit your claim.");
+                return;
+            }
+
+            if (event.getClickedItem().getName().equals(ChatColor.RED + "Obsidian")) {
+                boolean valid = validateEdit(player, MaterialType.OBSIDIAN, selection.getArea());
+                if (valid) {
+                    WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.OBSIDIAN);
+                }
+            }
+
+            if (event.getClickedItem().getName().equals(ChatColor.AQUA + "Cobblestone")) {
+                boolean valid = validateEdit(player, MaterialType.COBBLESTONE, selection.getArea());
+                if (valid) {
+                    WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.COBBLESTONE);
+                }
+            }
+            if (event.getClickedItem().getName().equals(ChatColor.GREEN + "Sand")) {
+                boolean valid = validateEdit(player, MaterialType.SAND, selection.getArea());
+                if (valid) {
+                    WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.SAND);
+                }
+                return;
+            }
+
+        }
+    }
+
+    private boolean validateEdit(Player player, MaterialType materialType, int selection) {
+        player.closeInventory();
+        int cost = 0;
+        switch (materialType) {
+            case OBSIDIAN:
+                cost = ConfigUtil.getInstance().getObsidianCost() * selection;
+                break;
+            case COBBLESTONE:
+                cost = ConfigUtil.getInstance().getCobblestoneCost() * selection;
+                break;
+            case SAND:
+                cost = ConfigUtil.getInstance().getSandCost() * selection;
+                break;
+        }
+
+        if (!player.hasPermission(GenWand.ADMIN_PERMISSION)) {
+            CooldownManager.add(player);
+        }
+        if (!player.hasPermission(GenWand.NOPAY_PERMISSION)) {
+
+            /* If the player is in a faction then the money will be taken
+            from the faction balance, otherwise it will be take from their
+            balance.
+             */
+            double money;
+
+            MPlayer mPlayer = MPlayer.get(player);
+            money = (mPlayer.hasFaction()) ? Money.get(mPlayer.getFaction()) : GenWand.getEconomy().getBalance(player);
+
+            if (money < cost) {
+                player.sendMessage(ConfigUtil.getInstance().getNotEnoughMoneyMessage());
+                return false;
+            }
+
+            if (mPlayer.hasFaction()) {
+                Money.set(mPlayer.getFaction(), null, money - cost);
+                player.sendMessage(ChatColor.RED + "$" + cost + " has been removed from the faction balance.");
+            } else {
+                GenWand.getEconomy().withdrawPlayer(player, cost);
+                player.sendMessage(ChatColor.RED + "$" + cost + " has been removed from your account.");
+            }
+
+            player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+        }
+        return true;
+    }
+
+    private enum MaterialType {
+        OBSIDIAN, COBBLESTONE, SAND
+    }
+
 }

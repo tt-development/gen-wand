@@ -1,9 +1,0 @@
-name: Genwand
-main: ttdev.genwand.GenWand
-depends: [Vault]
-authors: [Thomas, Tre]
-version: 1.0
-commands:
-   gen:
-      description: Main genwand command.
-      usage: /<command>

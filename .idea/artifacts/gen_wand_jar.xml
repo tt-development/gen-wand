@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="gen-wand:jar">
+    <output-path>$USER_HOME$/Desktop/Minecraft Software/Servers/1.8.8/plugins</output-path>
+    <root id="archive" name="gen-wand.jar">
+      <element id="module-output" name="gen-wand" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Desktop/APIs/api.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/APIs/Factions-2.14.0/Factions.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/APIs/Factions-2.14.0/MassiveCore.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/APIs/Vault.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/APIs/worldedit-bukkit-6.1.7.3.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/Bukkit Framework/1.8.8/spigot-api-1.8.8-R0.1-SNAPSHOT-shaded.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Desktop/APIs/Factions-2.14.0/Factions.jar!/" />
+      <root url="jar://$USER_HOME$/Desktop/APIs/Factions-2.14.0/MassiveCore.jar!/" />
+    </SOURCES>
+  </library>
+</component>
