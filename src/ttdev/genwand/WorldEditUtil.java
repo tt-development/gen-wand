@@ -11,13 +11,10 @@ import com.sk89q.worldedit.regions.Region;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import ttdev.api.APair;
 
-public class WorldEditUtil {
+class WorldEditUtil {
 
-    public static APair<Integer, Integer> setBlocks(World world, Selection selection, Material material) {
-        int affected = 0;
-        int area = 0;
+    static void setBlocks(World world, Selection selection, Material material) {
         EditSession session = new EditSession(BukkitUtil.getLocalWorld(world), ConfigUtil.getMaxBlocks());
         Location minP = selection.getMinimumPoint();
         Location maxP = selection.getMaximumPoint();
@@ -25,13 +22,10 @@ public class WorldEditUtil {
         Vector v2 = new Vector(maxP.getBlockX(), maxP.getBlockY(), maxP.getBlockZ());
         Region region = new CuboidRegion(v1, v2);
         try {
-            area = region.getArea();
-            affected = session.setBlocks(region, new BaseBlock(material.getId()));
-            System.out.println("Area: " + area + ", Affected: " + affected);
+            session.setBlocks(region, new BaseBlock(material.getId()));
         } catch (MaxChangedBlocksException e) {
             e.printStackTrace();
         }
-        return new APair<Integer, Integer>(affected, area);
     }
 
 }

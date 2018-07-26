@@ -22,7 +22,7 @@ public class InventoryManager implements InventoryListener {
         Manager.registerEvent(this);
     }
 
-    public static void openInventory(Player player) {
+    static void openInventory(Player player) {
 
         int size = GenWand.selectionMap.get(player).getArea();
 
@@ -98,7 +98,6 @@ public class InventoryManager implements InventoryListener {
                 if (valid) {
                     WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.SAND);
                 }
-                return;
             }
 
         }

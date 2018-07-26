@@ -1,6 +1,5 @@
 package ttdev.genwand;
 
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import net.md_5.bungee.api.ChatColor;
@@ -8,7 +7,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.BlockIterator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,19 +29,18 @@ public class GenWand extends JavaPlugin implements Listener {
     private static HashMap<Player, Location> pos1 = new HashMap<>();
     private static HashMap<Player, Location> pos2 = new HashMap<>();
 
-    public static Map<Player, Selection> selectionMap = new HashMap<>();
+    static Map<Player, Selection> selectionMap = new HashMap<>();
 
     private static GenWand singleton;
-    private static WorldEditPlugin worldEdit;
     private static Economy economy;
 
-    public static final String USE_PERMISSION = "genwand.use";
-    public static final String ADMIN_PERMISSION = "genwand.admin";
-    public static final String NOPAY_PERMISSION = "genwand.nopay";
+    static final String USE_PERMISSION = "genwand.use";
+    static final String ADMIN_PERMISSION = "genwand.admin";
+    static final String NOPAY_PERMISSION = "genwand.nopay";
 
     private static final int REACH = 200;
 
-    public static GenWand getInstance() {
+    static GenWand getInstance() {
         return singleton;
     }
 
@@ -57,10 +53,10 @@ public class GenWand extends JavaPlugin implements Listener {
         }
 
         PluginManager pluginManager = getServer().getPluginManager();
-        worldEdit = (WorldEditPlugin) pluginManager.getPlugin("WorldEdit");
-        if (worldEdit == null) {
-            getLogger().log(Level.WARNING, "Couldn't find plugin \"WorldEdit\"");
-        }
+//        worldEdit = (WorldEditPlugin) pluginManager.getPlugin("WorldEdit");
+//        if (worldEdit == null) {
+//            getLogger().log(Level.WARNING, "Couldn't find plugin \"WorldEdit\"");
+//        }
 
         pluginManager.registerEvents(this, this);
 
@@ -174,11 +170,7 @@ public class GenWand extends JavaPlugin implements Listener {
 
     }
 
-    public static WorldEditPlugin getWorldEdit() {
-        return worldEdit;
-    }
-
-    public static Economy getEconomy() {
+    static Economy getEconomy() {
         return economy;
     }
 
@@ -195,7 +187,7 @@ public class GenWand extends JavaPlugin implements Listener {
         FIRST, SECOND
     }
 
-    public boolean setPosition(Player player, boolean command, Position position, ItemStack itemInHand) {
+    private boolean setPosition(Player player, boolean command, Position position, ItemStack itemInHand) {
 
         Location target = player.getTargetBlock((Set<Material>) null, REACH).getLocation();
 
@@ -246,19 +238,6 @@ public class GenWand extends JavaPlugin implements Listener {
                 event.setCancelled(true);
             }
         }
-    }
-
-    //Get target block.
-    public final Block getTargetBlock(Player player, Integer range) {
-        BlockIterator bi = new BlockIterator(player, range);
-        Block lastBlock = bi.next();
-        while (bi.hasNext()) {
-            lastBlock = bi.next();
-            if (lastBlock.getType() == Material.AIR)
-                continue;
-            break;
-        }
-        return lastBlock;
     }
 
 }

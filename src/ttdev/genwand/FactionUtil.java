@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
-public class FactionUtil {
+class FactionUtil {
 
-    public static boolean isInOwnTerritory(Location locationOne, Location locationTwo, Player player) {
+    static boolean isInOwnTerritory(Location locationOne, Location locationTwo, Player player) {
         MPlayer mPlayer = MPlayer.get(player);
         Faction factionOne = BoardColl.get().getFactionAt(PS.valueOf(locationOne));
         Faction factionTwo = BoardColl.get().getFactionAt(PS.valueOf(locationTwo));
@@ -20,7 +20,7 @@ public class FactionUtil {
         return nonNull && playerFaction;
     }
 
-    public static boolean isInOwnTerritory(Location location, Player player) {
+    static boolean isInOwnTerritory(Location location, Player player) {
         MPlayer mPlayer = MPlayer.get(player);
         Faction faction = BoardColl.get().getFactionAt(PS.valueOf(location));
         return faction != null && mPlayer.getFaction() == faction;

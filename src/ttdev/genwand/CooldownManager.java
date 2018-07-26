@@ -7,14 +7,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class CooldownManager {
+class CooldownManager {
 
     private static Set<UUID> coolingPlayers = new HashSet<>();
 
-    public static boolean add(Player player) {
+    static void add(Player player) {
         UUID uuid = player.getUniqueId();
         if (coolingPlayers.contains(uuid)) {
-            return false;
+            return;
         }
 
         coolingPlayers.add(player.getUniqueId());
@@ -27,10 +27,10 @@ public class CooldownManager {
             }
         }.runTaskLater(GenWand.getInstance(), ConfigUtil.getDelay() * 20);
 
-        return true;
+        return;
     }
 
-    public static boolean isCooling(UUID uuid) {
+    static boolean isCooling(UUID uuid) {
         return coolingPlayers.contains(uuid);
     }
 
