@@ -23,7 +23,7 @@ public class CooldownManager {
                 coolingPlayers.remove(player.getUniqueId());
                 player.sendMessage(ConfigUtil.getInstance().getEditAvailableMessage());
             }
-        }.runTaskLater(GenWand.getInstance(), ConfigUtil.getInstance().getDelay());
+        }.runTaskLater(GenWand.getInstance(), ConfigUtil.getInstance().getDelay() * 20);
 
         return true;
     }
