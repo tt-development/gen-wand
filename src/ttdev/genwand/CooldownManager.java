@@ -23,9 +23,9 @@ public class CooldownManager {
             @Override
             public void run() {
                 coolingPlayers.remove(player.getUniqueId());
-                player.sendMessage(ConfigUtil.getInstance().getEditAvailableMessage());
+                player.sendMessage(ConfigUtil.getEditAvailableMessage());
             }
-        }.runTaskLater(GenWand.getInstance(), ConfigUtil.getInstance().getDelay() * 20);
+        }.runTaskLater(GenWand.getInstance(), ConfigUtil.getDelay() * 20);
 
         return true;
     }

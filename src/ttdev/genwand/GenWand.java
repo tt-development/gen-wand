@@ -109,7 +109,7 @@ public class GenWand extends JavaPlugin implements Listener {
                             return true;
                         }
                         givePlayer.getInventory().addItem(EditWand.getEditWand());
-                        givePlayer.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                        givePlayer.sendMessage(ConfigUtil.getWandReceivedMessage());
                     }
                     // Give with amount
                     else if (args.length == 3) {
@@ -120,7 +120,7 @@ public class GenWand extends JavaPlugin implements Listener {
                         }
                         int amount = Integer.parseInt(args[2]);
                         givePlayer.getInventory().addItem(EditWand.getEditWand(amount));
-                        givePlayer.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                        givePlayer.sendMessage(ConfigUtil.getWandReceivedMessage());
                     } else {
                         player.sendMessage(ChatColor.RED + "Incorrect syntax.");
                         return false;
@@ -131,7 +131,7 @@ public class GenWand extends JavaPlugin implements Listener {
                     Location locationOne = pos1.get(player);
                     Location locationTwo = pos2.get(player);
                     if (locationOne == null || locationTwo == null) {
-                        player.sendMessage(ConfigUtil.getInstance().getIncompleteSelectionMessage());
+                        player.sendMessage(ConfigUtil.getIncompleteSelectionMessage());
                         return true;
                     }
 
@@ -145,11 +145,11 @@ public class GenWand extends JavaPlugin implements Listener {
                 if (args[0].equalsIgnoreCase("wand")) {
                     if (args.length == 1) {
                         player.getInventory().addItem(EditWand.getEditWand());
-                        player.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                        player.sendMessage(ConfigUtil.getWandReceivedMessage());
                     } else if (args.length == 2) {
                         int amount = Integer.parseInt(args[1]);
                         player.getInventory().addItem(EditWand.getEditWand(amount));
-                        player.sendMessage(ConfigUtil.getInstance().getWandReceivedMessage());
+                        player.sendMessage(ConfigUtil.getWandReceivedMessage());
                     }
                     return true;
                 }
@@ -204,7 +204,7 @@ public class GenWand extends JavaPlugin implements Listener {
                 return false;
             }
             if (!FactionUtil.isInOwnTerritory(target, player)) {
-                player.sendMessage(ConfigUtil.getInstance().getAttemptUnclaimedEditMessage());
+                player.sendMessage(ConfigUtil.getAttemptUnclaimedEditMessage());
                 return true;
             }
         }
@@ -212,11 +212,11 @@ public class GenWand extends JavaPlugin implements Listener {
         switch (position) {
             case FIRST:
                 pos1.put(player, target);
-                player.sendMessage(ConfigUtil.getInstance().getPositionOneSetMessage());
+                player.sendMessage(ConfigUtil.getPositionOneSetMessage());
                 break;
             case SECOND:
                 pos2.put(player, target);
-                player.sendMessage(ConfigUtil.getInstance().getPositionTwoSetMessage());
+                player.sendMessage(ConfigUtil.getPositionTwoSetMessage());
                 break;
         }
 

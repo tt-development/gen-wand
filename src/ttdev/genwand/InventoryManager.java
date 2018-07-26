@@ -56,9 +56,9 @@ public class InventoryManager implements InventoryListener {
 
     private static int[] calculateCosts(int area){
         int[] costs=new int[3];
-        costs[0]=ConfigUtil.getInstance().getObsidianCost()*area;
-        costs[1]=ConfigUtil.getInstance().getCobblestoneCost()*area;
-        costs[2]=ConfigUtil.getInstance().getSandCost()*area;
+        costs[0]=ConfigUtil.getObsidianCost()*area;
+        costs[1]=ConfigUtil.getCobblestoneCost()*area;
+        costs[2]=ConfigUtil.getSandCost()*area;
         return costs;
     }
 
@@ -109,19 +109,19 @@ public class InventoryManager implements InventoryListener {
         int cost = 0;
         switch (materialType) {
             case OBSIDIAN:
-                cost = ConfigUtil.getInstance().getObsidianCost() * selection;
+                cost = ConfigUtil.getObsidianCost() * selection;
                 break;
             case COBBLESTONE:
-                cost = ConfigUtil.getInstance().getCobblestoneCost() * selection;
+                cost = ConfigUtil.getCobblestoneCost() * selection;
                 break;
             case SAND:
-                cost = ConfigUtil.getInstance().getSandCost() * selection;
+                cost = ConfigUtil.getSandCost() * selection;
                 break;
         }
 
         if (!player.hasPermission(GenWand.ADMIN_PERMISSION)) {
             if(CooldownManager.isCooling(player.getUniqueId())){
-                player.sendMessage(ConfigUtil.getInstance().getEditUnavailableMessage());
+                player.sendMessage(ConfigUtil.getEditUnavailableMessage());
                 return false;
             }else{
                 CooldownManager.add(player);
@@ -140,7 +140,7 @@ public class InventoryManager implements InventoryListener {
             money = (mPlayer.hasFaction()) ? Money.get(mPlayer.getFaction()) : GenWand.getEconomy().getBalance(player);
 
             if (money < cost) {
-                player.sendMessage(ConfigUtil.getInstance().getNotEnoughMoneyMessage());
+                player.sendMessage(ConfigUtil.getNotEnoughMoneyMessage());
                 return false;
             }
 
@@ -152,7 +152,7 @@ public class InventoryManager implements InventoryListener {
                 player.sendMessage(ChatColor.RED + "$" + cost + " has been removed from your account.");
             }
 
-            player.sendMessage(ConfigUtil.getInstance().getEditSuccessMessage());
+            player.sendMessage(ConfigUtil.getEditSuccessMessage());
         }
         return true;
     }

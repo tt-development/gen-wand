@@ -18,7 +18,7 @@ public class WorldEditUtil {
     public static APair<Integer, Integer> setBlocks(World world, Selection selection, Material material) {
         int affected = 0;
         int area = 0;
-        EditSession session = new EditSession(BukkitUtil.getLocalWorld(world), ConfigUtil.getInstance().getMaxBlocks());
+        EditSession session = new EditSession(BukkitUtil.getLocalWorld(world), ConfigUtil.getMaxBlocks());
         Location minP = selection.getMinimumPoint();
         Location maxP = selection.getMaximumPoint();
         Vector v1 = new Vector(minP.getBlockX(), minP.getBlockY(), minP.getBlockZ());
