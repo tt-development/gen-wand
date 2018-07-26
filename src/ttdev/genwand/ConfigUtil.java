@@ -42,9 +42,9 @@ public class ConfigUtil {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
-    public String getNotEnoughMoneyMessage(){
-        final String message=GenWand.getInstance().getConfig().getString("message.not-enough-money");
-        return ChatColor.translateAlternateColorCodes('&',message);
+    public String getNotEnoughMoneyMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.not-enough-money");
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     public String getIncompleteSelectionMessage() {
@@ -64,6 +64,11 @@ public class ConfigUtil {
 
     public String getEditAvailableMessage() {
         final String message = GenWand.getInstance().getConfig().getString("message.edit-available");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getEditUnavailableMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.edit-unavailable");
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 

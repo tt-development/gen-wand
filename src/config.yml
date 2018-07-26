@@ -6,7 +6,7 @@ edit-tool: 280
 max-blocks: 100
 
 # Delay in seconds
-delay: 20
+delay: 10
 
 # Material prices
 prices:
@@ -33,6 +33,9 @@ message:
 
   # When the players cooldown is over.
   edit-available: '&eEdit wand ready.'
+
+  # When the player is still on cooldown
+  edit-unavailable: '&cYou must wait before using this again.'
 
   pos1-set: '&ePosition 1 set.'
   pos2-set: '&ePosition 2 set.'

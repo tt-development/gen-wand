@@ -17,6 +17,8 @@ public class CooldownManager {
             return false;
         }
 
+        coolingPlayers.add(player.getUniqueId());
+
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -26,6 +28,10 @@ public class CooldownManager {
         }.runTaskLater(GenWand.getInstance(), ConfigUtil.getInstance().getDelay() * 20);
 
         return true;
+    }
+
+    public static boolean isCooling(UUID uuid) {
+        return coolingPlayers.contains(uuid);
     }
 
 }

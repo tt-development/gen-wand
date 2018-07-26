@@ -120,8 +120,14 @@ public class InventoryManager implements InventoryListener {
         }
 
         if (!player.hasPermission(GenWand.ADMIN_PERMISSION)) {
-            CooldownManager.add(player);
+            if(CooldownManager.isCooling(player.getUniqueId())){
+                player.sendMessage(ConfigUtil.getInstance().getEditUnavailableMessage());
+                return false;
+            }else{
+                CooldownManager.add(player);
+            }
         }
+
         if (!player.hasPermission(GenWand.NOPAY_PERMISSION)) {
 
             /* If the player is in a faction then the money will be taken

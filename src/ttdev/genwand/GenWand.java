@@ -52,8 +52,8 @@ public class GenWand extends JavaPlugin implements Listener {
     public void onEnable() {
         singleton = this;
 
-        if(!setupEconomy()){
-            getLogger().log(Level.WARNING,"Couldn't enable Economy.");
+        if (!setupEconomy()) {
+            getLogger().log(Level.WARNING, "Couldn't enable Economy.");
         }
 
         PluginManager pluginManager = getServer().getPluginManager();
@@ -65,9 +65,7 @@ public class GenWand extends JavaPlugin implements Listener {
         pluginManager.registerEvents(this, this);
 
         //Configuration
-        this.getConfig().addDefault("items", "");
-        this.getConfig().options().copyDefaults(true);
-        this.saveConfig();
+        saveDefaultConfig();
     }
 
     @Override
@@ -194,7 +192,7 @@ public class GenWand extends JavaPlugin implements Listener {
     }
 
     private enum Position {
-        FIRST,SECOND
+        FIRST, SECOND
     }
 
     public boolean setPosition(Player player, boolean command, Position position, ItemStack itemInHand) {
@@ -230,10 +228,10 @@ public class GenWand extends JavaPlugin implements Listener {
         Player player = event.getPlayer();
         Action action = event.getAction();
 
-        ItemStack itemStack=event.getItem();
+        ItemStack itemStack = event.getItem();
 
-        if (!player.hasPermission(USE_PERMISSION)&&EditWand.isEqual(itemStack)) {
-            player.sendMessage(ChatColor.RED+"No permission.");
+        if (!player.hasPermission(USE_PERMISSION) && EditWand.isEqual(itemStack)) {
+            player.sendMessage(ChatColor.RED + "No permission.");
             return;
         }
 
