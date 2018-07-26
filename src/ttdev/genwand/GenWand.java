@@ -24,6 +24,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+/* Copyright (C) alexslime11 - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Tre Logan <tr3.logan@gmail.com>, July 2018
+ */
+
 public class GenWand extends JavaPlugin implements Listener {
 
     private static HashMap<Player, Location> pos1 = new HashMap<>();
@@ -85,6 +91,7 @@ public class GenWand extends JavaPlugin implements Listener {
                 player.sendMessage("/gw reload - Reload configuration");
                 player.sendMessage("/gw wand [amount] - Give yourself the edit wand");
                 player.sendMessage("/gw give <player> [amount] - Give somebody else the edit wand");
+                player.sendMessage("/gw gen - Open material selection menu.");
                 player.sendMessage("/gw pos1 - Set first cuboid point");
                 player.sendMessage("/gw pos2 - Set second cuboid point");
             }

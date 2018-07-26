@@ -4,6 +4,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+/* Copyright (C) alexslime11 - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Tre Logan <tr3.logan@gmail.com>, July 2018
+ */
+
 @SuppressWarnings("deprecation")
 class EditWand {
 

@@ -12,6 +12,12 @@ import ttdev.api.user.inventory.events.inventoryclick.InventoryClick;
 import ttdev.api.user.inventory.events.inventoryclick.InventoryListener;
 import ttdev.api.user.items.Item;
 
+/* Copyright (C) alexslime11 - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Tre Logan <tr3.logan@gmail.com>, July 2018
+ */
+
 public class InventoryManager implements InventoryListener {
 
     static {
@@ -36,16 +42,16 @@ public class InventoryManager implements InventoryListener {
         cobblestone.setName("&bCobblestone");
         sand.setName("&aSand");
 
-        int[] costs=calculateCosts(size);
+        int[] costs = calculateCosts(size);
 
         obsidian.addLore("&fClick to fill selection with obsidian.");
-        obsidian.addLore("&a$"+costs[0]);
+        obsidian.addLore("&a$" + costs[0]);
 
         cobblestone.addLore("&fClick to fill selection with cobblestone.");
-        cobblestone.addLore("&a$"+costs[1]);
+        cobblestone.addLore("&a$" + costs[1]);
 
         sand.addLore("&fClick to fill selection with sand.");
-        sand.addLore("&a$"+costs[2]);
+        sand.addLore("&a$" + costs[2]);
 
         inventory.setItem(obsidian, 2);
         inventory.setItem(cobblestone, 4);
@@ -54,11 +60,11 @@ public class InventoryManager implements InventoryListener {
         player.openInventory(inventory.getInventory());
     }
 
-    private static int[] calculateCosts(int area){
-        int[] costs=new int[3];
-        costs[0]=ConfigUtil.getObsidianCost()*area;
-        costs[1]=ConfigUtil.getCobblestoneCost()*area;
-        costs[2]=ConfigUtil.getSandCost()*area;
+    private static int[] calculateCosts(int area) {
+        int[] costs = new int[3];
+        costs[0] = ConfigUtil.getObsidianCost() * area;
+        costs[1] = ConfigUtil.getCobblestoneCost() * area;
+        costs[2] = ConfigUtil.getSandCost() * area;
         return costs;
     }
 
@@ -119,10 +125,10 @@ public class InventoryManager implements InventoryListener {
         }
 
         if (!player.hasPermission(GenWand.ADMIN_PERMISSION)) {
-            if(CooldownManager.isCooling(player.getUniqueId())){
+            if (CooldownManager.isCooling(player.getUniqueId())) {
                 player.sendMessage(ConfigUtil.getEditUnavailableMessage());
                 return false;
-            }else{
+            } else {
                 CooldownManager.add(player);
             }
         }

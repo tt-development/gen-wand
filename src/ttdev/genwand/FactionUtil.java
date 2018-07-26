@@ -9,6 +9,12 @@ import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
+/* Copyright (C) alexslime11 - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Tre Logan <tr3.logan@gmail.com>, July 2018
+ */
+
 class FactionUtil {
 
     static boolean isInOwnTerritory(Location locationOne, Location locationTwo, Player player) {

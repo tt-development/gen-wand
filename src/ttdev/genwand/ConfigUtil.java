@@ -2,6 +2,12 @@ package ttdev.genwand;
 
 import org.bukkit.ChatColor;
 
+/* Copyright (C) alexslime11 - All Rights Reserved
+ * Unauthorized copying of this file, via any medium is strictly prohibited
+ * Proprietary and confidential
+ * Written by Tre Logan <tr3.logan@gmail.com>, July 2018
+ */
+
 class ConfigUtil {
 
     static int getObsidianCost() {
