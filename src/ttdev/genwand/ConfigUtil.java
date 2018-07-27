@@ -55,6 +55,11 @@ class ConfigUtil {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    static String getEditCancelledMessage() {
+        final String message = GenWand.getInstance().getConfig().getString("message.edit-cancelled");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     static String getEditAvailableMessage() {
         final String message = GenWand.getInstance().getConfig().getString("message.edit-available");
         return ChatColor.translateAlternateColorCodes('&', message);

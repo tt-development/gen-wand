@@ -1,7 +1,5 @@
 package ttdev.genwand;
 
-import com.massivecraft.factions.entity.MPlayer;
-import com.massivecraft.massivecore.money.Money;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -87,83 +85,36 @@ public class InventoryManager implements InventoryListener {
             }
 
             if (event.getClickedItem().getName().equals(ChatColor.RED + "Obsidian")) {
-                boolean valid = validateEdit(player, MaterialType.OBSIDIAN, selection.getArea());
-                if (valid) {
-                    WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.OBSIDIAN);
+                PlacedEditOrder placedEditOrder = placeEditOrder(player, MaterialType.OBSIDIAN, selection.getArea());
+                if (placedEditOrder != null) {
+                    ConfirmationInventory.open(player, placedEditOrder);
                 }
             }
 
             if (event.getClickedItem().getName().equals(ChatColor.AQUA + "Cobblestone")) {
-                boolean valid = validateEdit(player, MaterialType.COBBLESTONE, selection.getArea());
-                if (valid) {
-                    WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.COBBLESTONE);
+                PlacedEditOrder placedEditOrder = placeEditOrder(player, MaterialType.COBBLESTONE, selection.getArea());
+                if (placedEditOrder != null) {
+                    ConfirmationInventory.open(player, placedEditOrder);
                 }
             }
             if (event.getClickedItem().getName().equals(ChatColor.GREEN + "Sand")) {
-                boolean valid = validateEdit(player, MaterialType.SAND, selection.getArea());
-                if (valid) {
-                    WorldEditUtil.setBlocks(player.getWorld(), GenWand.selectionMap.get(player), Material.SAND);
+                PlacedEditOrder placedEditOrder = placeEditOrder(player, MaterialType.SAND, selection.getArea());
+                if (placedEditOrder != null) {
+                    ConfirmationInventory.open(player, placedEditOrder);
                 }
             }
 
         }
     }
 
-    private boolean validateEdit(Player player, MaterialType materialType, int selection) {
+    static PlacedEditOrder placeEditOrder(Player player, MaterialType materialType, int selection) {
         player.closeInventory();
-        int cost = 0;
-        switch (materialType) {
-            case OBSIDIAN:
-                cost = ConfigUtil.getObsidianCost() * selection;
-                break;
-            case COBBLESTONE:
-                cost = ConfigUtil.getCobblestoneCost() * selection;
-                break;
-            case SAND:
-                cost = ConfigUtil.getSandCost() * selection;
-                break;
-        }
 
-        if (!player.hasPermission(GenWand.ADMIN_PERMISSION)) {
-            if (CooldownManager.isCooling(player.getUniqueId())) {
-                player.sendMessage(ConfigUtil.getEditUnavailableMessage());
-                return false;
-            } else {
-                CooldownManager.add(player);
-            }
-        }
+        EditOrder editOrder = EditOrder.of(player);
+        editOrder.addArea(selection);
+        editOrder.addMaterial(materialType);
 
-        if (!player.hasPermission(GenWand.NOPAY_PERMISSION)) {
-
-            /* If the player is in a faction then the money will be taken
-            from the faction balance, otherwise it will be take from their
-            balance.
-             */
-            double money;
-
-            MPlayer mPlayer = MPlayer.get(player);
-            money = (mPlayer.hasFaction()) ? Money.get(mPlayer.getFaction()) : GenWand.getEconomy().getBalance(player);
-
-            if (money < cost) {
-                player.sendMessage(ConfigUtil.getNotEnoughMoneyMessage());
-                return false;
-            }
-
-            if (mPlayer.hasFaction()) {
-                Money.set(mPlayer.getFaction(), null, money - cost);
-                player.sendMessage(ChatColor.RED + "$" + cost + " has been removed from the faction balance.");
-            } else {
-                GenWand.getEconomy().withdrawPlayer(player, cost);
-                player.sendMessage(ChatColor.RED + "$" + cost + " has been removed from your account.");
-            }
-
-            player.sendMessage(ConfigUtil.getEditSuccessMessage());
-        }
-        return true;
-    }
-
-    private enum MaterialType {
-        OBSIDIAN, COBBLESTONE, SAND
+        return editOrder.place();
     }
 
 }

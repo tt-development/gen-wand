@@ -17,9 +17,6 @@ prices:
 # Message configuration
 message:
 
-  # When the help menu is opened
-  line
-
   # When a player is a given an edit wand.
   wand-received: '&aEdit wand received.'
 
@@ -34,6 +31,9 @@ message:
 
   # When /gen succeeds and all blocks have been placed.
   edit-success: '&aEdit successful.'
+
+  # When the player cancels the edit via the confirmation menu
+  edit-cancelled: '&cEdit cancelled.'
 
   # When the players cooldown is over.
   edit-available: '&eEdit wand ready.'

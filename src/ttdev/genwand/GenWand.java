@@ -247,4 +247,8 @@ public class GenWand extends JavaPlugin implements Listener {
         }
     }
 
+    public void registerEvent(Listener listener){
+        getServer().getPluginManager().registerEvents(listener,this);
+    }
+
 }
