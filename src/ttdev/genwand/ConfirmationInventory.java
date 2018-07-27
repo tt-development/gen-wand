@@ -75,6 +75,7 @@ public class ConfirmationInventory implements Listener {
                 }
 
                 player.sendMessage(ConfigUtil.getEditSuccessMessage());
+                CooldownManager.add(player);
 
             } else if (itemName.equals(noText)) {
                 player.sendMessage(ConfigUtil.getEditCancelledMessage());

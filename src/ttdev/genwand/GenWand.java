@@ -59,11 +59,6 @@ public class GenWand extends JavaPlugin implements Listener {
         }
 
         PluginManager pluginManager = getServer().getPluginManager();
-//        worldEdit = (WorldEditPlugin) pluginManager.getPlugin("WorldEdit");
-//        if (worldEdit == null) {
-//            getLogger().log(Level.WARNING, "Couldn't find plugin \"WorldEdit\"");
-//        }
-
         pluginManager.registerEvents(this, this);
 
         //Configuration
@@ -95,11 +90,12 @@ public class GenWand extends JavaPlugin implements Listener {
                 player.sendMessage("/gw pos1 - Set first cuboid point");
                 player.sendMessage("/gw pos2 - Set second cuboid point");
             }
+
             if (args.length > 0 && player.hasPermission(USE_PERMISSION)) {
 
-                if (args[0].equalsIgnoreCase("reload") && player.hasPermission(ADMIN_PERMISSION)) {
+                if(args[0].equalsIgnoreCase("reload")&&player.hasPermission(ADMIN_PERMISSION)){
                     reloadConfig();
-                    player.sendMessage(getName() + " reloaded.");
+                    player.sendMessage(getName()+" reloaded.");
                     return true;
                 }
 

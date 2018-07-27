@@ -71,8 +71,6 @@ public class EditOrder {
                 if (CooldownManager.isCooling(player.getUniqueId())) {
                     player.sendMessage(ConfigUtil.getEditUnavailableMessage());
                     return null;
-                } else {
-                    CooldownManager.add(player);
                 }
             }
 
