@@ -93,9 +93,9 @@ public class GenWand extends JavaPlugin implements Listener {
 
             if (args.length > 0 && player.hasPermission(USE_PERMISSION)) {
 
-                if(args[0].equalsIgnoreCase("reload")&&player.hasPermission(ADMIN_PERMISSION)){
+                if (args[0].equalsIgnoreCase("reload") && player.hasPermission(ADMIN_PERMISSION)) {
                     reloadConfig();
-                    player.sendMessage(getName()+" reloaded.");
+                    player.sendMessage(getName() + " reloaded.");
                     return true;
                 }
 
@@ -243,8 +243,8 @@ public class GenWand extends JavaPlugin implements Listener {
         }
     }
 
-    public void registerEvent(Listener listener){
-        getServer().getPluginManager().registerEvents(listener,this);
+    public void registerEvent(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
 }

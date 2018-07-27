@@ -5,5 +5,5 @@ author: [Tre, Thomas]
 depends: [Vault, WorldEdit, API, Factions, MassiveCore]
 commands:
   gw:
-    description: GenWand
+    description: View GenWand help menu.
     permission: genwand.use
